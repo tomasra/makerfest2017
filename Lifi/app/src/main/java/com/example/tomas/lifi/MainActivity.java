@@ -12,6 +12,7 @@ import android.util.Log;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private SensorManager mSensorManager;
     private Sensor mLight;
+    private int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        count = 0;
     }
 
     @Override
@@ -33,12 +35,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // Many sensors return 3 values, one for each axis.
         float lux = event.values[0];
         // Do something with this sensor value.
+        Log.d("TEST", Long.toString(event.timestamp) + " " + Float.toString(lux));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, mLight, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mLight, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     @Override
