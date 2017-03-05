@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.tomas.lifi">
+<uses-permission-sdk-23 android:name="android.permission.RECORD_AUDIO"></uses-permission-sdk-23>
+    <uses-permission-sdk-23 android:name="android.permission.CAPTURE_AUDIO_OUTPUT"></uses-permission-sdk-23>
+ <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT"></uses-permission>
     <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
     <application
         android:allowBackup="true"
@@ -10,7 +13,7 @@
         android:theme="@style/AppTheme">
 
 
-        <activity android:name=".recorder">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

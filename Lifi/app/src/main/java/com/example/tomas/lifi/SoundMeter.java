@@ -6,55 +6,67 @@ import android.media.MediaRecorder;
 import android.util.Log;
 
 
-
-
-
-
 public class SoundMeter {
 
-    private AudioRecord ar = null;
+    private AudioRecord _ar = null;
     private int minSize;
 
-    public int getValidSampleRate() {
-        for (int rate : new int[] {8000, 11025, 16000, 22050, 44100}) {  // add the rates you wish to check against
-            int bufferSize = AudioRecord.getMinBufferSize(rate, AudioFormat.CHANNEL_CONFIGURATION_DEFAULT, AudioFormat.ENCODING_PCM_16BIT);
-            if (bufferSize > 0) {
-                // buffer size is valid, Sample rate supported
-                Log.i("Rate supported:", rate + " ");
-                return rate;
+    private static int[] mSampleRates = new int[] { 8000, 11025, 22050, 44100 };
+
+    public AudioRecord findAudioRecord() {
+        for (int rate : mSampleRates) {
+            for (short audioFormat : new short[] { AudioFormat.ENCODING_PCM_8BIT, AudioFormat.ENCODING_PCM_16BIT }) {
+                for (short channelConfig : new short[] { AudioFormat.CHANNEL_IN_MONO, AudioFormat.CHANNEL_IN_STEREO }) {
+                    try {
+                        Log.d("", "Attempting rate " + rate + "Hz, bits: " + audioFormat + ", channel: "
+                                + channelConfig);
+                        int bufferSize = AudioRecord.getMinBufferSize(rate, channelConfig, audioFormat);
+
+                        if (bufferSize != AudioRecord.ERROR_BAD_VALUE) {
+                            // check if we can instantiate and have a success
+                            AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.DEFAULT, rate, channelConfig, audioFormat, bufferSize);
+
+                            if (recorder.getState() == AudioRecord.STATE_INITIALIZED) {
+                                return recorder;
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.e("", rate + "Exception, keep trying.",e);
+                    }
+                }
             }
         }
-        return -1;
+        Log.e("", "No configuration was valid!!!");
+        return null;
     }
 
-    public void start(int sampleRate) {
+
+
+
+    public void start() {
         try {
+                _ar = findAudioRecord();
 
-            minSize = AudioRecord.getMinBufferSize(sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
-            ar = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, minSize);
-            ar.release();
-            if (ar.getState() == AudioRecord.STATE_INITIALIZED){
-                ar.startRecording();
+                minSize = AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT);
+                _ar.startRecording();
             }
-            else {
-                Log.e("ar.getState()", "Not initialised");
-            }
-
-        }
         catch(Exception e){
             Log.e("TrackingFlow", "Exception", e);
         }
     }
 
     public void stop() {
-        if (ar != null) {
-            ar.stop();
+        if (_ar != null) {
+            _ar.stop();
+            _ar.release();
+            _ar = null;
         }
     }
 
     public double getAmplitude() {
         short[] buffer = new short[minSize];
-        ar.read(buffer, 0, minSize);
+        _ar.read(buffer, 0, minSize);
         int max = 0;
         for (short s : buffer)
         {
