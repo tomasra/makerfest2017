@@ -24,25 +24,28 @@ public class MainActivity extends Activity  {
     private long _timer;
     private LineGraphSeries<DataPoint> _series;
     private GraphView _graph;
-
+    private MediaPlayer _mp;
 
     private final Handler _handler = new Handler();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textTxt = (TextView)findViewById(R.id.amplitude);
+        textTxt = (TextView)findViewById(R.id.periodasTxtBox);
         _soundMeter = new SoundMeter();
         _graph = (GraphView) findViewById(R.id.graph);
         _series = new LineGraphSeries<DataPoint>();
         _graph.addSeries(_series);
 //        _graph.getViewport().setYAxisBoundsManual(true);
-//        _graph.getViewport().setMinY(30000);
-//        _graph.getViewport().setMaxY(40000);
+//        _graph.getViewport().setMinY(-33000);
+//        _graph.getViewport().setMaxY(33000);
 
         _timer = 4;
 
-       }
+        _mp = MediaPlayer.create(getApplicationContext(), R.raw.soundwave1);
+        _mp.setLooping(true);
+        //_mp.setVolume(1,1);
+    }
 
 
     public void record(){
@@ -50,8 +53,10 @@ public class MainActivity extends Activity  {
         try {
             isRecording = true;
             while (isRecording) {
-                double result = _soundMeter.getAmplitude();
-                setText(textTxt, result + "", result, _graph);
+                //double result = _soundMeter.getAmplitude();
+                short[] buffer = _soundMeter.getBuffer();
+                //setText(textTxt, result + "", result, _graph);
+                setText(textTxt, buffer[0] + "",  _graph, buffer);
                  if (!isRecording) {
                     _soundMeter.stop();
                     break;
@@ -70,31 +75,37 @@ public class MainActivity extends Activity  {
         isRecording=false;
     }
 
-    private void setText(final TextView text,final String value, final double doubleValue, final GraphView graph){
+    private void setText(final TextView text,final String value, final GraphView graph, final short[]  buffer){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 text.setText(value);
-                _series.appendData( new DataPoint(_timer++, doubleValue),true,30);
+                _timer = 0;
+                DataPoint[] dataPoints = new DataPoint[buffer.length];
+                for(int i = 0; i < buffer.length; i++){ //buffer.length
+                    dataPoints[i] = new DataPoint(_timer++, buffer[i]);
+                    //_series.appendData( new DataPoint(_timer++, buffer[i]),true,200);
+
+                }
+                _series.resetData(dataPoints);
+                //_series.appendData( new DataPoint(_timer++, doubleValue),true,30);
                 graph.removeAllSeries();
                 graph.addSeries(_series);
-                //_handler.postDelayed(this, 200);
-                //_graph.refreshDrawableState();
+                //_mp.setVolume(1,1);
             }
         });
         }
     public void onClickRecord(View v){
         Log.v("onClickRecourd", "record clicked, thread gona start");
-        textTxt.setText("recording");
-        thread = new Thread(){
-            @Override
-            public void run() {
-                isRecording = true;
-                _soundMeter.start();
-                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.soundwave1);
-                mp.setLooping(true);
-                mp.start();
-                record();
+                textTxt.setText("recording");
+                thread = new Thread(){
+                    @Override
+                    public void run() {
+                        isRecording = true;
+                        _soundMeter.start();
+
+                        _mp.start();
+                        record();
             };
         };
         thread.start();

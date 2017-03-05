@@ -40,15 +40,12 @@ public class SoundMeter {
         return null;
     }
 
-
-
-
     public void start() {
         try {
                 _ar = findAudioRecord();
 
                 minSize = AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO,
-                    AudioFormat.ENCODING_PCM_16BIT);
+                    AudioFormat.ENCODING_PCM_8BIT);
                 _ar.startRecording();
             }
         catch(Exception e){
@@ -65,8 +62,7 @@ public class SoundMeter {
     }
 
     public double getAmplitude() {
-        short[] buffer = new short[minSize];
-        _ar.read(buffer, 0, minSize);
+        short[] buffer = getBuffer();
         int max = 0;
         for (short s : buffer)
         {
@@ -78,4 +74,9 @@ public class SoundMeter {
         return max;
     }
 
+    public short[] getBuffer() {
+        short[] buffer = new short[minSize];
+        _ar.read(buffer, 0, minSize);
+        return buffer;
+    }
 }

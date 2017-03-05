@@ -7,62 +7,27 @@
     tools:context="com.example.tomas.lifi.MainActivity">
 
     <TextView
-        android:id="@+id/amplitude"
-        android:layout_width="80dp"
-        android:layout_height="25dp"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.172" />
-
-    <TextView
         android:id="@+id/logoTxtBox"
         android:layout_width="391dp"
         android:layout_height="67dp"
-        android:text="Šviesuolis INC"
+        android:text="Šviesuolis "
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.035" />
-
-    <TextView
-        android:id="@+id/herzaiTxtBox"
-        android:layout_width="80dp"
-        android:layout_height="25dp"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.179"
-        app:layout_constraintHorizontal_bias="0.766" />
+        app:layout_constraintVertical_bias="0.448"
+        android:layout_marginLeft="-3dp" />
 
     <TextView
         android:id="@+id/periodasTxtBox"
         android:layout_width="89dp"
         android:layout_height="21dp"
-        android:text="Hello World!"
+        android:text="Vertė"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.227"
-        app:layout_constraintVertical_bias="0.171" />
-
-    <TextView
-        android:id="@+id/sviesumasTxtBox"
-        android:layout_width="70dp"
-        android:layout_height="18dp"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintVertical_bias="0.176" />
+        app:layout_constraintHorizontal_bias="0.945"
+        app:layout_constraintVertical_bias="0.428" />
 
     <Button
         app:layout_constraintBottom_toBottomOf="parent"
@@ -72,12 +37,13 @@
         android:id="@+id/startRecordingBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="109dp"
-        android:onClick="onClickRecord"/>
+        android:text="Pradėti"
+        android:onClick="onClickRecord"
+        app:layout_constraintVertical_bias="0.498" />
     <com.jjoe64.graphview.GraphView
-        android:layout_width="match_parent"
-        android:layout_height="200dip"
-        android:id="@+id/graph" />
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:id="@+id/graph"
+        tools:layout_editor_absoluteY="-2dp"
+        tools:layout_editor_absoluteX="0dp" />
 </android.support.constraint.ConstraintLayout>
